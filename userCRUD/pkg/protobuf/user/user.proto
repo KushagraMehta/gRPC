@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package basic;
+option go_package="example.com/one/user";
+
+message RegisterUserRequest{
+    string fname = 1;
+    string city = 2;
+    int64 phone = 3;
+    float height = 4;
+    bool Married = 5;
+}
+message RegisterUserResponse{
+    uint32 ID = 1;
+}
+message userDetailRequest{
+    uint32 ID = 1;
+}
+message userDetailResponse{
+    uint32 ID = 1;
+    string fname = 2;
+    string city = 3;
+    int64 phone = 4;
+    float height = 5;
+    bool Married = 6;
+}
+
+message usersListRequest{
+    repeated uint32 IDs = 1;
+}
+message usersListResponse{
+    repeated userDetailResponse userDetail = 1;
+}
+service UserService{
+    rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse){}
+    rpc GetUserDetail(userDetailRequest) returns (userDetailResponse){};
+    rpc GetUsersList(usersListRequest) returns (usersListResponse){};
+}
