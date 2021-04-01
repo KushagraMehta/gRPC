@@ -10,12 +10,10 @@ message RegisterUserRequest{
     float height = 4;
     bool Married = 5;
 }
-message RegisterUserResponse{
+message userID{
     uint32 ID = 1;
 }
-message userDetailRequest{
-    uint32 ID = 1;
-}
+
 message userDetailResponse{
     uint32 ID = 1;
     string fname = 2;
@@ -32,7 +30,8 @@ message usersListResponse{
     repeated userDetailResponse userDetail = 1;
 }
 service UserService{
-    rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse){}
-    rpc GetUserDetail(userDetailRequest) returns (userDetailResponse){};
+    rpc RegisterUser(RegisterUserRequest) returns (userID){}
+    rpc GetUserDetail(userID) returns (userDetailResponse){};
     rpc GetUsersList(usersListRequest) returns (usersListResponse){};
+    rpc StreamUsersList(stream userID) returns (stream userDetailResponse){};
 }

@@ -11,7 +11,7 @@ tasks:
     silent: true
   client:
     cmds:
-      - grpcui -plaintext localhost:50051
+      - grpcui -port 8090 -plaintext localhost:50051
     silent: true
   server:
     cmds:
