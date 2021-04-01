@@ -2,10 +2,12 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"os"
 	"os/signal"
+	"time"
 
 	pb "github.com/KushagraMehta/gRPC-Tutorial/userCRUD/pkg/protobuf/user"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -21,15 +23,23 @@ type Server struct {
 func (server *Server) Initialize() {
 
 	var err error
-
-	DBURL := os.Getenv("DATABASE_URL")
-	if server.DB, err = pgxpool.Connect(context.Background(), DBURL); err != nil {
-		log.Println("Cannot connect to database")
-		log.Fatal("This is the error:", err)
+	var DBURL string
+	if os.Getenv("LOCAL") == "1" {
+		DBURL = fmt.Sprintf("postgres://%v:%v@%v:5432/crud", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"), "localhost")
 	} else {
-		log.Println("We are connected to the database")
+		DBURL = fmt.Sprintf("postgres://%v:%v@%v:5432/crud", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"), os.Getenv("HOST"))
 	}
-	// log.Println(server.DB.Config())
+	for i := 0; i < 5; i++ {
+		if server.DB, err = pgxpool.Connect(context.Background(), DBURL); err != nil {
+			log.Println("Cannot connect to database")
+			log.Fatal("This is the error:", err)
+			log.Printf("%v: Trying to connect to Database after ", i)
+			time.Sleep(500 * time.Millisecond)
+		} else {
+			log.Println("We are connected to the database")
+			break
+		}
+	}
 }
 
 func (server *Server) Run(port string) {

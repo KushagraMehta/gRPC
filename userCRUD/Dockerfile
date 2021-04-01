@@ -21,11 +21,8 @@ RUN go mod download
 # Copy the source from the current directory to the working Directory inside the container 
 COPY . .
 
-# Installing task runner
-RUN  go get -u github.com/go-task/task/v3/cmd/task
-
 # Build the Go app
-RUN  task build
+RUN  GOOS=linux go build -ldflags="-s -w" -o main cmd/server/server.go
 
 # Start a new stage from scratch
 FROM alpine:latest
