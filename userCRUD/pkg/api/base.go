@@ -25,20 +25,20 @@ func (server *Server) Initialize() {
 	var err error
 	var DBURL string
 	if os.Getenv("LOCAL") == "1" {
-		DBURL = fmt.Sprintf("postgres://%v:%v@%v:5432/crud", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"), "localhostf")
+		DBURL = fmt.Sprintf("postgres://%v:%v@%v:5432/crud", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"), "localhost")
 	} else {
 		DBURL = fmt.Sprintf("postgres://%v:%v@%v:5432/crud", os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"), os.Getenv("HOST"))
 	}
 	for i := 1; i < 10; i++ {
 		if server.DB, err = pgxpool.Connect(context.Background(), DBURL); err != nil {
 			log.Println("Cannot connect to database")
-			log.Printf("%v:Trying to connect to Database after 0.5Sec", i)
-			time.Sleep(500 * time.Millisecond)
+			log.Printf("%v:Trying to connect to Database after 1Sec", i)
+			time.Sleep(1 * time.Second)
 		} else {
 			log.Println("We are connected to the database")
 			break
 		}
-		if i == 4 {
+		if i == 9 {
 			log.Fatal("This is the error:", err)
 		}
 	}
